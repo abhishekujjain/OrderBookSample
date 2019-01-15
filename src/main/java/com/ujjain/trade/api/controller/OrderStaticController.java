@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.List;
 
-@Api(value = "/api/statictics", description = "Executes and Order statictics ")
+@Api(value = "/api/statistics", description = "Executes and Order stats ")
 @RestController
 @RequestMapping(value = "/api/statistics")
 public class OrderStaticController {
