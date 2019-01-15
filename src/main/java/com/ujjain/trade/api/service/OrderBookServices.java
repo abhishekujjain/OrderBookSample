@@ -62,6 +62,7 @@ public class OrderBookServices {
         qty = executeOrderRequest.getQuantity();
         scheduledExecutorService.execute(new ExecuteMarketOrder(lock, orderService, this, executeOrderRequest));
         scheduledExecutorService.execute(new ExecuteLimitOrder(lock, orderService, this, executeOrderRequest));
+        scheduledExecutorService.shutdown();
 
     }
 
