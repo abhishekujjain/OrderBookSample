@@ -4,10 +4,14 @@ import com.ujjain.trade.api.model.ExecuteOrderRequest;
 import com.ujjain.trade.api.service.OrderBookServices;
 import com.ujjain.trade.api.service.OrderService;
 import com.ujjain.trade.dependencies.db.model.OrderModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class ExecuteMarketOrder implements Runnable {
+    private static final Logger logger = LoggerFactory.getLogger(ExecuteMarketOrder.class);
+
     Object lock;
     OrderService orderService;
     OrderBookServices orderBookServices;
@@ -29,7 +33,7 @@ public class ExecuteMarketOrder implements Runnable {
         {
             synchronized (lock) {
 
-                System.out.println("Executing market order");
+                logger.info("Executing market order");
                 if (orderModelList != null && orderModelList.size() > 0 && orderBookServices.getQty()>0) {
                     orderBookServices.executeOrderUnitWise(executeOrderRequest, orderModel,true);
                 }

@@ -4,10 +4,14 @@ import com.ujjain.trade.api.model.ExecuteOrderRequest;
 import com.ujjain.trade.api.service.OrderBookServices;
 import com.ujjain.trade.api.service.OrderService;
 import com.ujjain.trade.dependencies.db.model.OrderModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class ExecuteLimitOrder implements Runnable {
+    private static final Logger logger = LoggerFactory.getLogger(ExecuteLimitOrder.class);
+
     Object lock;
     OrderService orderService;
     OrderBookServices orderBookServices;
@@ -30,7 +34,7 @@ public class ExecuteLimitOrder implements Runnable {
             for (OrderModel orderModel : orderModelList) {
                 synchronized (lock) {
 
-                    System.out.println("Executing limit order");
+                    logger.info("Executing limit order");
                     if (orderModelList != null && orderModelList.size() > 0 && orderBookServices.getQty() > 0) {
                         orderBookServices.executeOrderUnitWise(executeOrderRequest, orderModel,false);
                     }

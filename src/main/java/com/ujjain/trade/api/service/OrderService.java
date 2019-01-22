@@ -7,7 +7,8 @@ import com.ujjain.trade.dependencies.db.dao.OrderRecievedDao;
 import com.ujjain.trade.dependencies.db.model.OrderBookTable;
 import com.ujjain.trade.dependencies.db.model.OrderModel;
 import com.ujjain.trade.dependencies.db.model.OrderRecieved;
-import net.bytebuddy.implementation.bytecode.Throw;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Modifying;
@@ -19,6 +20,7 @@ import java.util.List;
 @Service
 public class OrderService {
 
+    private static final Logger logger = LoggerFactory.getLogger(OrderBookServices.class);
 
     @Autowired
     OrderDao orderDao;
@@ -39,16 +41,19 @@ public class OrderService {
                 OrderModel orderModel = new OrderModel(orderRequest.getQuantity(), orderRequest.getPrice(), orderRequest.getFinanceInstrumentId(), orderRequest.isMarket());
                 updateOrderRecieveTable(orderModel);
                 if (orderRequest.isMarket()==false && orderModel.getPrice()<=0) {
+                    logger.info("Not valid order");
                     return "Not valid order";
                 }
                 orderDao.save(orderModel);
 
                 return orderModel.toString();
             } else {
+                logger.info("Instrument id closed");
                 return "Instrument id closed";
             }
         } catch (Exception e) {
             e.printStackTrace();
+            logger.info("Something went wrong while adding order " + e.getMessage());
             return "Something went wrong";
 
         }
@@ -57,6 +62,7 @@ public class OrderService {
     private void updateOrderRecieveTable(OrderModel orderModel) {
         if(orderModel.getMarketOrder()!=null && orderModel.getMarketOrder() )
         {
+            logger.info("No entry for market order");
             return;
         }
 
@@ -65,6 +71,7 @@ public class OrderService {
         try {
             orderRecieved = orderRecievedDao.findByPriceAndFinancialId(orderModel.getPrice(),orderModel.getFinanceIntrumentId());
             if (orderRecieved != null) {
+                logger.info("Limit order table updated");
                 val = orderRecievedDao.updateLimitOrder(orderRecieved.getQuantity() + orderModel.getOrderedQuantity(), orderModel.getPrice(),orderModel.getFinanceIntrumentId());
             }
         } catch (Exception e) {
@@ -123,17 +130,11 @@ public class OrderService {
     @Transactional
     @Modifying
     public List<OrderBookTable> updateInstrumentStatus(int finId, boolean status) {
-        int val = orderBookStatusDao.updateInstrumentStatus(status, finId);
+        logger.info("Oderbooks status updated for " + finId + " to " + status);
+        orderBookStatusDao.updateInstrumentStatus(status, finId);
         return orderBookStatusDao.findAll();
     }
 
-
-//    @Transactional
-//    @Modifying
-//    public OrderModel updateOrder(Long id, double price) {
-//        int val = orderDao.updateUserData(price, id);
-//        return orderDao.findAllById(id);
-//    }
 
 
     public OrderBookTable findInstrumentById(int finId) {
@@ -142,7 +143,7 @@ public class OrderService {
 
 
     public void updateFinanceInstrumentId() {
-        System.out.println("Test updateFinanceInstrumentId");
+        logger.info("Test updateFinanceInstrumentId");
 
         orderBookStatusDao.save(new OrderBookTable(25, true));
         orderBookStatusDao.save(new OrderBookTable(4, true));

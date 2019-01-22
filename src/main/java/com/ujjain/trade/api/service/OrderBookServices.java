@@ -10,6 +10,8 @@ import com.ujjain.trade.dependencies.db.model.ExecutedOrder;
 import com.ujjain.trade.dependencies.db.model.ExecutedOrdertable;
 import com.ujjain.trade.dependencies.db.model.OrderBookTable;
 import com.ujjain.trade.dependencies.db.model.OrderModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,8 @@ import java.util.concurrent.ScheduledExecutorService;
 
 @Service
 public class OrderBookServices {
+    private static final Logger logger = LoggerFactory.getLogger(OrderBookServices.class);
+
     @Autowired
     ExecutedOrderDao executedOrderDao;
     @Autowired
@@ -43,6 +47,8 @@ public class OrderBookServices {
     @Transactional
     public String executeOrder(ExecuteOrderRequest executeOrderRequest) {
         try {
+            logger.info("Order Execution started");
+
             OrderBookTable orderBookTable = orderBookStatusDao.findByInstrumentId(executeOrderRequest.getFinanceInstrumentId());
             if (orderBookTable != null && orderBookTable.getStatus() == false) {
                 callExecuteOrder(executeOrderRequest);
@@ -50,6 +56,7 @@ public class OrderBookServices {
                 return "Close finance Instrument";
             }
         } catch (Exception e) {
+            logger.info("Exeception while executing order " + e.getMessage());
             e.printStackTrace();
         }
         return "Success";
@@ -61,11 +68,13 @@ public class OrderBookServices {
         ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
         Object lock = new Object();
         qty = executeOrderRequest.getQuantity();
-        System.out.println("Total quantity :" + qty);
+        logger.info("Total quantity recieved for execution :" + qty);
         allocationPerUnit = getAllocationPerUnitQuantity(executeOrderRequest);
         scheduledExecutorService.execute(new ExecuteMarketOrder(lock, orderService, this, executeOrderRequest));
         scheduledExecutorService.execute(new ExecuteLimitOrder(lock, orderService, this, executeOrderRequest));
         scheduledExecutorService.shutdown();
+        logger.info("Order Execution Processed");
+
 
     }
 
@@ -79,6 +88,8 @@ public class OrderBookServices {
 
 
     public void executeOrderUnitWise(ExecuteOrderRequest executedOrder, OrderModel orderModel, boolean isMarket) {
+        logger.info("Execution for order started for  :" + orderModel.toString());
+
         Boolean status = true;
         if (orderModel.getPrice() < executedOrder.getPrice() && isMarket == false) {
             status = false;
@@ -98,15 +109,16 @@ public class OrderBookServices {
             executedOrderDao.save(executedOrdr);
             orderService.deleteOrder(orderModel);
             updateExecutedTable(executedOrder);
+            logger.info("Execution for order completed for  :" + orderModel.toString());
+
 //
         }
     }
 
     private int getExecutedQuantity(OrderModel orderModel, Double allocationPerUnitQuantity) {
         int allotedQuantity = 0;
-
         allotedQuantity = (int) (orderModel.getOrderedQuantity() * allocationPerUnitQuantity);
-        System.out.println("allocated qty : " + allotedQuantity);
+        logger.info("allocated qty : " + allotedQuantity);
         return allotedQuantity;
     }
 
@@ -117,6 +129,7 @@ public class OrderBookServices {
         try {
             executedOrdertable = executedStatsDao.findByExecutionPrice(request.getPrice());
             if (executedOrdertable != null) {
+                logger.info("Table updated for executed order");
                 val = executedStatsDao.updateExecutedOrder(request.getQuantity(), request.getPrice());
             }
         } catch (Exception e) {
@@ -140,7 +153,6 @@ public class OrderBookServices {
         int marktQty = getCount(marketOrder);
         int limittQty = getCount(limitOrder);
         Double availableQty = Double.valueOf(limittQty + marktQty);
-
         Double distribution = orderRequest.getQuantity() / availableQty;
         return distribution;
     }

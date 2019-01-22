@@ -54,11 +54,4 @@ public class OrderController {
         return orderService.addInstrument(bookTable);
     }
 
-
-
-//    @ApiOperation(value = "get orderBook table by Id")
-//    @GetMapping(value = "/findInstrumentById")
-//    public OrderBookTable findInsbyId(@RequestParam("finId") int finId) {
-//        return orderService.findInstrumentById(finId);
-//    }
 }
