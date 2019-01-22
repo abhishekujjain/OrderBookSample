@@ -2,7 +2,7 @@ package com.ujjain.trade.api.controller;
 
 import com.ujjain.trade.api.model.OrderRequest;
 import com.ujjain.trade.api.service.OrderService;
-import com.ujjain.trade.dependencies.db.model.InstrumentStatus;
+import com.ujjain.trade.dependencies.db.model.OrderBookTable;
 import com.ujjain.trade.dependencies.db.model.OrderModel;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -48,31 +48,17 @@ public class OrderController {
         return orderService.getAllByInstrumentId(financeId,isMarketOrder);
     }
 
-    @ApiOperation(value = "1. open and to close an order book for an instrument ")
-    @PutMapping(value = "/updateInstrument")
-    public List<InstrumentStatus> updateInstrument(@RequestParam("finId") int finId, @RequestParam("status") boolean status) {
-        try {
-            orderService.updateFinanceInstrumentId();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return orderService.updateInstrumentStatus(finId, status);
+    @ApiOperation(value = "Add Instrument")
+    @PostMapping(value = "/addInstrument")
+    public OrderBookTable addFinanceInstrument(@RequestBody OrderBookTable bookTable) {
+        return orderService.addInstrument(bookTable);
     }
 
-    //    @ApiOperation(value = "Update Order ")
-//    @PutMapping(value = "/updateOrder")
-    public OrderModel updateOrder(@RequestParam("finId") Long id, @RequestParam("price") double price) {
-        try {
-            return orderService.updateOrder(id, price);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
-    @ApiOperation(value = "get all Order based on type")
-    @GetMapping(value = "/findInstrumentById")
-    public InstrumentStatus findInsbyId(@RequestParam("finId") int finId) {
-        return orderService.findInstrumentById(finId);
-    }
+
+//    @ApiOperation(value = "get orderBook table by Id")
+//    @GetMapping(value = "/findInstrumentById")
+//    public OrderBookTable findInsbyId(@RequestParam("finId") int finId) {
+//        return orderService.findInstrumentById(finId);
+//    }
 }

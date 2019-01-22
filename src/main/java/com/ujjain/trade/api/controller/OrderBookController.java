@@ -1,10 +1,9 @@
 package com.ujjain.trade.api.controller;
 
 import com.ujjain.trade.api.model.ExecuteOrderRequest;
-import com.ujjain.trade.api.model.OrderRequest;
 import com.ujjain.trade.api.service.OrderBookServices;
-import com.ujjain.trade.dependencies.db.model.ExecutedOrder;
-import com.ujjain.trade.dependencies.db.model.InstrumentStatus;
+import com.ujjain.trade.api.service.OrderService;
+import com.ujjain.trade.dependencies.db.model.OrderBookTable;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,9 @@ public class OrderBookController {
     @Autowired
     OrderBookServices orderBookServices;
 
+    @Autowired
+    OrderService orderService;
+
     @ApiOperation(value = "Add order to order book")
     @PostMapping(value = "/execute")
     public ResponseEntity<String> executeOrder(@RequestBody final ExecuteOrderRequest executeOrderRequest) {
@@ -29,16 +31,33 @@ public class OrderBookController {
         return new ResponseEntity<String>(orderBookServices.executeOrder(executeOrderRequest), HttpStatus.OK);
     }
 
-
-    @ApiOperation(value = "Update ExecutedOrder ")
-    @PutMapping(value = "/updateExecutedOrder")
-    public ExecutedOrder updateInstrument(@RequestParam("id") Long id, @RequestParam("status") boolean status) {
+    @ApiOperation(value = "1. open an order book for an instrument ")
+    @PutMapping(value = "/openOrder")
+    public List<OrderBookTable> openInstrument(@RequestParam("finId") int finId) {
         try {
-            orderBookServices.updateOrder(status,id);
+            orderService.updateFinanceInstrumentId();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return orderBookServices.getbyId(id);
+        return orderService.updateInstrumentStatus(finId, true);
+    }
+
+    @ApiOperation(value = "1.to close an order book for an instrument ")
+    @PutMapping(value = "/closeOrder")
+    public List<OrderBookTable> closeInstrument(@RequestParam("finId") int finId) {
+        try {
+            orderService.updateFinanceInstrumentId();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return orderService.updateInstrumentStatus(finId, false);
+    }
+
+
+    @ApiOperation(value = "get all OrderBook")
+    @GetMapping(value = "/orderBookList")
+    public List<OrderBookTable> findInsbyId() {
+        return orderService.getOrderBookList();
     }
 
 }

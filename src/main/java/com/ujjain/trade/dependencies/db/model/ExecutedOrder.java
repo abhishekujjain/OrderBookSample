@@ -7,36 +7,78 @@ import javax.persistence.Table;
 @Table(name = "ExecutedOrder")
 public class ExecutedOrder extends BaseEntity {
 
-    int quantity;
-    double price;
+    Integer allocatedQuantity;
+    Integer leftQuantity;
+    Double price;
     Long orderId;
-    boolean isValid;
-    int financeInstrument;
+    Boolean isValid;
+    Boolean isMarketOrder;
+    Integer financeIntrumentId;
 
     public ExecutedOrder() {
     }
 
-    public ExecutedOrder(int quantity, double price, Long orderId, boolean isValid, int financeInstrument) {
-        this.quantity = quantity;
+    public ExecutedOrder(Integer allocatedQuantity, Integer leftQuantity, Double price, Long orderId, Boolean isValid, Boolean isMarketOrder, Integer financeIntrumentId) {
+        this.allocatedQuantity = allocatedQuantity;
+        this.leftQuantity = leftQuantity;
         this.price = price;
         this.orderId = orderId;
         this.isValid = isValid;
-        this.financeInstrument = financeInstrument;
+        this.isMarketOrder = isMarketOrder;
+        this.financeIntrumentId = financeIntrumentId;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public Boolean getMarketOrder() {
+        return isMarketOrder;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setMarketOrder(Boolean marketOrder) {
+        isMarketOrder = marketOrder;
     }
 
-    public double getPrice() {
+    public Integer getFinanceIntrumentId() {
+        return financeIntrumentId;
+    }
+
+    public void setFinanceIntrumentId(Integer financeIntrumentId) {
+        this.financeIntrumentId = financeIntrumentId;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("ExecutedOrder{");
+        sb.append("allocatedQuantity=").append(allocatedQuantity);
+        sb.append(", leftQuantity=").append(leftQuantity);
+        sb.append(", price=").append(price);
+        sb.append(", orderId=").append(orderId);
+        sb.append(", isValid=").append(isValid);
+        sb.append(", isMarketOrder=").append(isMarketOrder);
+        sb.append(", financeIntrumentId=").append(financeIntrumentId);
+        sb.append('}');
+        return sb.toString();
+    }
+
+    public Integer getAllocatedQuantity() {
+        return allocatedQuantity;
+    }
+
+    public void setAllocatedQuantity(Integer allocatedQuantity) {
+        this.allocatedQuantity = allocatedQuantity;
+    }
+
+    public Integer getLeftQuantity() {
+        return leftQuantity;
+    }
+
+    public void setLeftQuantity(Integer leftQuantity) {
+        this.leftQuantity = leftQuantity;
+    }
+
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
@@ -48,25 +90,19 @@ public class ExecutedOrder extends BaseEntity {
         this.orderId = orderId;
     }
 
-    public boolean isValid() {
+    public Boolean getValid() {
         return isValid;
     }
 
-    public void setValid(boolean valid) {
+    public void setValid(Boolean valid) {
         isValid = valid;
     }
 
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("ExecutedOrder{");
-        sb.append("quantity=").append(quantity);
-        sb.append(", price=").append(price);
-        sb.append(", orderId=").append(orderId);
-        sb.append(", isValid=").append(isValid);
-        sb.append(", id=").append(id);
-         sb.append(", createdOn=").append(createdOn);
-        sb.append(", updatedOn=").append(updatedOn);
-        sb.append('}');
-        return sb.toString();
+    public Integer getFinanceInstrument() {
+        return financeIntrumentId;
+    }
+
+    public void setFinanceInstrument(Integer financeInstrument) {
+        this.financeIntrumentId = financeInstrument;
     }
 }

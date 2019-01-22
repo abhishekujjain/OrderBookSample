@@ -9,32 +9,40 @@ import javax.persistence.Table;
 public class ExecutedOrdertable extends BaseEntity {
 
     @Column(unique = true)
-    double price;
-    int quantity;
+    Double executionPrice;
+    Integer allotedQuantity;
+    Integer financeIntrumentId;
 
     public ExecutedOrdertable() {
     }
 
-    public ExecutedOrdertable(double price, int quantity) {
-        this.price = price;
-        this.quantity = quantity;
+    public ExecutedOrdertable(Double executionPrice, Integer allotedQuantity, Integer financeIntrumentId) {
+        this.executionPrice = executionPrice;
+        this.allotedQuantity = allotedQuantity;
+        this.financeIntrumentId = financeIntrumentId;
     }
 
-    public double getPrice() {
-        return price;
+    public Integer getFinanceIntrumentId() {
+        return financeIntrumentId;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setFinanceIntrumentId(Integer financeIntrumentId) {
+        this.financeIntrumentId = financeIntrumentId;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public Double getExecutionPrice() {
+        return executionPrice;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setExecutionPrice(Double executionPrice) {
+        this.executionPrice = executionPrice;
     }
 
+    public Integer getAllotedQuantity() {
+        return allotedQuantity;
+    }
 
+    public void setAllotedQuantity(Integer allotedQuantity) {
+        this.allotedQuantity = allotedQuantity;
+    }
 }

@@ -2,51 +2,41 @@ package com.ujjain.trade;
 
 import com.ujjain.trade.api.model.OrderRequest;
 import com.ujjain.trade.api.service.OrderService;
-import com.ujjain.trade.dependencies.db.dao.LimitOrderDao;
-import com.ujjain.trade.dependencies.db.model.LimitOrder;
-import org.junit.Before;
+import com.ujjain.trade.dependencies.db.dao.OrderDao;
+import com.ujjain.trade.dependencies.db.model.OrderModel;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
+
+@ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+
 public class OrderServiceTest {
 
-    @Autowired
-    OrderService orderService;
+
+//    @Autowired
+//    OrderService orderService;
 
     @Autowired
-    LimitOrderDao limitOrderDao;
-
-    @Before
-    public void setUp() {
-        orderService = new OrderService();
-
-    }
+    OrderDao orderDao;
 
     @Test
-    public void name() {
+    public void testDataEntry() {
+
+//       Assert.assertTrue("true", orderDao.save(new OrderModel(22, 323.23, 25, true, true))!=null);
+//       OrderModel orderModel=orderDao.findAllById(2L);
+//       Assert.assertNotNull(orderDao.findAllById(2L));
+//       Assert.assertFalse("true", (orderDao.updateUserData(21.00,2L))==1);
     }
 
-    @Test
-    public void testOrderBookImmutable() {
-
-        orderService.addOrder(new OrderRequest(1223, 255, 44, true, true));
-        long k = 5;
-//        OrderModel orderModel = orderService.getAll(k);
-//        orderModel.setPrice(1);
-//        assertNotEquals("failed", orderService.updateOrder(7777,k), 1);
-    }
-
-
-    @Test
-    public void testLimitOrder() {
-
-//        orderService.addOrder(new OrderRequest(3233, 445.44, 25, true, true));
-        limitOrderDao.save(new LimitOrder(439,44));
-    }
 
 }

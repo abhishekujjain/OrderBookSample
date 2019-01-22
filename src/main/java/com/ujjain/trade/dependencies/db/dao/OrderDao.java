@@ -11,11 +11,18 @@ public interface OrderDao extends JpaRepository<OrderModel, Long> {
 
 
     @Query("from OrderModel i where i.isMarketOrder =:params")
-    public List<OrderModel> getAllByMarketOrder(boolean params);
+    List<OrderModel> getAllByMarketOrder(boolean params);
 
 
-    @Query("from OrderModel i where i.financeIntrumentId =:finId and i.isMarketOrder =:params order by createdOn")
-    public List<OrderModel> getAllByFinId(int finId ,boolean params);
+    @Query("from OrderModel i where i.financeIntrumentId =:finId and i.isMarketOrder =:params order by orderedQuantity asc")
+    List<OrderModel> getAllByFinId(Integer finId, Boolean params);
+
+
+    @Query("from OrderModel i where i.financeIntrumentId =:finId and i.isMarketOrder =false and  i.price >=:priceOrder  order by orderedQuantity asc")
+    List<OrderModel> getAllByFinIdLimitOrder(Integer finId,Double priceOrder);
+
+    @Query("from OrderModel i where i.financeIntrumentId =:finId and i.isMarketOrder =true order by orderedQuantity asc")
+    List<OrderModel> getAllByFinIdMarketOrder(Integer finId);
 
 
     @Transactional
@@ -25,5 +32,5 @@ public interface OrderDao extends JpaRepository<OrderModel, Long> {
 //     List<OrderModel> findAllByCreatedOnOrderByCreatedOnAsc();
 
 
-    OrderModel findAllById(Long id);
+    List<OrderModel> findAllByFinanceIntrumentId(Integer financeId);
 }

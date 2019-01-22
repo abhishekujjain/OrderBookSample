@@ -10,93 +10,90 @@ import javax.persistence.Table;
 @Immutable
 public class OrderModel extends BaseEntity {
 
-    private int quantity;
-    private double price;
-    private boolean isMarketOrder;
-    private boolean isExecuted;
-    private boolean isInvalid;
-    private int financeIntrumentId;
-    private boolean isSell;
+    private Integer orderedQuantity;
+    private Integer executedQuantity;
+    private Double price;
+    private Boolean isMarketOrder;
+    private Boolean isExecuted;
+    private Boolean isInvalid;
+    private Integer financeIntrumentId;
 
-    public OrderModel(int quantity, double price, boolean isMarketOrder, int financeIntrumentId, boolean sell) {
-        this.quantity = quantity;
+    public OrderModel(Integer orderedQuantity, Double price, Integer financeIntrumentId, Boolean isMarketOrder) {
+        this.orderedQuantity = orderedQuantity;
         this.price = price;
         this.isMarketOrder = isMarketOrder;
         this.financeIntrumentId = financeIntrumentId;
-        this.isSell = sell;
     }
 
     public OrderModel() {
     }
 
-
-
-    public boolean isSell() {
-        return isSell;
+    public Integer getOrderedQuantity() {
+        return orderedQuantity;
     }
 
-    public void setSell(boolean sell) {
-        isSell = sell;
+    public void setOrderedQuantity(Integer orderedQuantity) {
+        this.orderedQuantity = orderedQuantity;
     }
 
-    public int getFinanceIntrumentId() {
-        return financeIntrumentId;
+    public Integer getExecutedQuantity() {
+        return executedQuantity;
     }
 
-    public void setFinanceIntrumentId(int financeIntrumentId) {
-        this.financeIntrumentId = financeIntrumentId;
+    public void setExecutedQuantity(Integer executedQuantity) {
+        this.executedQuantity = executedQuantity;
     }
 
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
-    public boolean isMarketOrder() {
+    public Boolean getMarketOrder() {
         return isMarketOrder;
     }
 
-    public void setMarketOrder(boolean marketOrder) {
+    public void setMarketOrder(Boolean marketOrder) {
         isMarketOrder = marketOrder;
     }
 
-    public boolean isExecuted() {
+    public Boolean getExecuted() {
         return isExecuted;
     }
 
-    public void setExecuted(boolean executed) {
+    public void setExecuted(Boolean executed) {
         isExecuted = executed;
     }
 
-    public boolean isInvalid() {
+    public Boolean getInvalid() {
         return isInvalid;
     }
 
-    public void setInvalid(boolean invalid) {
+    public void setInvalid(Boolean invalid) {
         isInvalid = invalid;
+    }
+
+    public Integer getFinanceIntrumentId() {
+        return financeIntrumentId;
+    }
+
+    public void setFinanceIntrumentId(Integer financeIntrumentId) {
+        this.financeIntrumentId = financeIntrumentId;
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("OrderModel{");
-        sb.append("quantity=").append(quantity);
+        sb.append("orderedQuantity=").append(orderedQuantity);
+        sb.append(", executedQuantity=").append(executedQuantity);
         sb.append(", price=").append(price);
         sb.append(", isMarketOrder=").append(isMarketOrder);
         sb.append(", isExecuted=").append(isExecuted);
         sb.append(", isInvalid=").append(isInvalid);
         sb.append(", financeIntrumentId=").append(financeIntrumentId);
-        sb.append(", isSell=").append(isSell);
         sb.append('}');
         return sb.toString();
     }

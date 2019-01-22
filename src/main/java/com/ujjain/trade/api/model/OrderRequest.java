@@ -6,26 +6,17 @@ public class OrderRequest {
     private double price;
     private int financeInstrumentId;
     private boolean isMarket;
-    private boolean isSell;
 
-    public OrderRequest(int quantity, double price, int financeInstrumentId, boolean isMarket, boolean isSell) {
+    public OrderRequest(int quantity, double price, int financeInstrumentId, boolean isMarket) {
         this.quantity = quantity;
         this.price = price;
         this.financeInstrumentId = financeInstrumentId;
         this.isMarket = isMarket;
-        this.isSell = isSell;
     }
 
     public OrderRequest() {
     }
 
-    public boolean isSell() {
-        return isSell;
-    }
-
-    public void setSell(boolean sell) {
-        isSell = sell;
-    }
 
     public int getQuantity() {
         return quantity;

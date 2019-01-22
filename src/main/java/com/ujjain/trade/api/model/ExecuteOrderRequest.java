@@ -2,32 +2,32 @@ package com.ujjain.trade.api.model;
 
 
 public class ExecuteOrderRequest {
-    private int quantity;
-    private double price;
-    private int financeInstrumentId;
+    private Integer quantity;
+    private Double price;
+    private Integer financeInstrumentId;
 
 
-    public int getFinanceInstrumentId() {
-        return financeInstrumentId;
-    }
-
-    public void setFinanceInstrumentId(int financeInstrumentId) {
-        this.financeInstrumentId = financeInstrumentId;
-    }
-
-    public int getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public Integer getFinanceInstrumentId() {
+        return financeInstrumentId;
+    }
+
+    public void setFinanceInstrumentId(Integer financeInstrumentId) {
+        this.financeInstrumentId = financeInstrumentId;
     }
 }

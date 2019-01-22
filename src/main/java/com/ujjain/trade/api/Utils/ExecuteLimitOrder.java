@@ -30,7 +30,7 @@ public class ExecuteLimitOrder implements Runnable {
             for (OrderModel orderModel : orderModelList) {
                 synchronized (lock) {
 
-                    System.out.println("Executing market order");
+                    System.out.println("Executing limit order");
                     if (orderModelList != null && orderModelList.size() > 0 && orderBookServices.getQty() > 0) {
                         orderBookServices.executeOrderUnitWise(executeOrderRequest, orderModel,false);
                     }

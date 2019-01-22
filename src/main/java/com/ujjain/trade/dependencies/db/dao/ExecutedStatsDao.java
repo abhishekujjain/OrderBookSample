@@ -5,12 +5,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 public interface ExecutedStatsDao extends JpaRepository<ExecutedOrdertable, Long> {
 
     @Modifying
-    @Query("update ExecutedOrdertable limitOrder set limitOrder.quantity = ?1  where limitOrder.price = ?2")
-    int updateExecutedOrder(int qty, double price);
+    @Query("update ExecutedOrdertable limitOrder set limitOrder.allotedQuantity = ?1  where limitOrder.executionPrice = ?2")
+    int updateExecutedOrder(Integer qty, Double executionPrice);
 
 
-    ExecutedOrdertable findByPrice(double price);
-}
+    ExecutedOrdertable findByExecutionPrice(Double executionPrice);
+ }

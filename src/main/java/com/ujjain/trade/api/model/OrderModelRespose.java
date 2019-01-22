@@ -7,19 +7,36 @@ import java.util.HashMap;
 
 public class OrderModelRespose {
 
-    int numberofOrder;
-    int quantityDemanded;
-    int quantityDemandedValid;
-    int quantityDemandedInvalid;
-    int biggestOrder;
-    int smallestOrder;
+    Integer numberofOrder;
+    Integer quantityDemanded;
+    Integer quantityDemandedValid;
+    Integer quantityDemandedInvalid;
+    Integer biggestOrder;
+    Integer smallestOrder;
     OrderModel earlierOrderEntry;
     OrderModel lastOrderEntry;
-
+    Integer marketOrderQuantity;
     HashMap<Double, Integer> executionQuantityWithPrice;
     HashMap<Double, Integer> requestedOrderPrice;
+    HashMap<Integer, Integer> OrderBookWiseWise;
     ExecutedOrder earlierOrderEntryExecuted;
     ExecutedOrder lastOrderEntryExecuted;
+
+    public Integer getMarketOrderQuantity() {
+        return marketOrderQuantity;
+    }
+
+    public void setMarketOrderQuantity(Integer marketOrderQuantity) {
+        this.marketOrderQuantity = marketOrderQuantity;
+    }
+
+    public HashMap<Integer, Integer> getOrderBookWiseWise() {
+        return OrderBookWiseWise;
+    }
+
+    public void setOrderBookWiseWise(HashMap<Integer, Integer> orderBookWiseWise) {
+        OrderBookWiseWise = orderBookWiseWise;
+    }
 
     public HashMap<Double, Integer> getExecutionQuantityWithPrice() {
         return executionQuantityWithPrice;
@@ -61,35 +78,35 @@ public class OrderModelRespose {
         this.lastOrderEntryExecuted = lastOrderEntryExecuted;
     }
 
-    public int getNumberofOrder() {
+    public Integer getNumberofOrder() {
         return numberofOrder;
     }
 
-    public void setNumberofOrder(int numberofOrder) {
+    public void setNumberofOrder(Integer numberofOrder) {
         this.numberofOrder = numberofOrder;
     }
 
-    public int getQuantityDemanded() {
+    public Integer getQuantityDemanded() {
         return quantityDemanded;
     }
 
-    public void setQuantityDemanded(int quantityDemanded) {
+    public void setQuantityDemanded(Integer quantityDemanded) {
         this.quantityDemanded = quantityDemanded;
     }
 
-    public int getBiggestOrder() {
+    public Integer getBiggestOrder() {
         return biggestOrder;
     }
 
-    public void setBiggestOrder(int biggestOrder) {
+    public void setBiggestOrder(Integer biggestOrder) {
         this.biggestOrder = biggestOrder;
     }
 
-    public int getSmallestOrder() {
+    public Integer getSmallestOrder() {
         return smallestOrder;
     }
 
-    public void setSmallestOrder(int smallestOrder) {
+    public void setSmallestOrder(Integer smallestOrder) {
         this.smallestOrder = smallestOrder;
     }
 
@@ -101,19 +118,19 @@ public class OrderModelRespose {
         this.earlierOrderEntry = earlierOrderEntry;
     }
 
-    public int getQuantityDemandedValid() {
+    public Integer getQuantityDemandedValid() {
         return quantityDemandedValid;
     }
 
-    public void setQuantityDemandedValid(int quantityDemandedValid) {
+    public void setQuantityDemandedValid(Integer quantityDemandedValid) {
         this.quantityDemandedValid = quantityDemandedValid;
     }
 
-    public int getQuantityDemandedInvalid() {
+    public Integer getQuantityDemandedInvalid() {
         return quantityDemandedInvalid;
     }
 
-    public void setQuantityDemandedInvalid(int quantityDemandedInvalid) {
+    public void setQuantityDemandedInvalid(Integer quantityDemandedInvalid) {
         this.quantityDemandedInvalid = quantityDemandedInvalid;
     }
 
