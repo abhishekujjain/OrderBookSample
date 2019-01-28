@@ -3,7 +3,7 @@ package com.ujjain.trade.api.Utils;
 import com.ujjain.trade.api.model.ExecuteOrderRequest;
 import com.ujjain.trade.api.service.OrderBookServices;
 import com.ujjain.trade.api.service.OrderService;
-import com.ujjain.trade.dependencies.db.model.OrderModel;
+import com.ujjain.trade.dependencies.db.model.Order;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,28 +26,19 @@ public class ExecuteMarketOrder implements Runnable {
 
     @Override
     public void run() {
-        List<OrderModel> orderModelList = orderService.getAllByInstrumentId(executeOrderRequest.getFinanceInstrumentId(), true);
+        List<Order> orderList = orderService.getAllByInstrumentId(executeOrderRequest.getFinanceInstrumentId(), true);
 
 
-        for(OrderModel orderModel:orderModelList)
+        for (Order order : orderList)
         {
-            synchronized (lock) {
 
-                logger.info("Executing market order");
-                if (orderModelList != null && orderModelList.size() > 0 && orderBookServices.getQty()>0) {
-                    orderBookServices.executeOrderUnitWise(executeOrderRequest, orderModel,true);
-                }
-                try {
-                lock.notifyAll();
 
-                    if (orderService.getAll(false) != null && orderService.getAll(false).size() > 0) {
-                        lock.wait();
-                    }                } catch (Exception e) {
-                    e.printStackTrace();
+            logger.info("Executing market order");
+            if (orderList != null && orderList.size() > 0 && orderBookServices.getQty() > 0) {
+                orderBookServices.executeOrderUnitWise(executeOrderRequest, order, true);
                 }
-            }
+
         }
-
 
 
     }

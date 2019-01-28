@@ -8,7 +8,7 @@ import javax.persistence.Table;
 public class ExecutedOrder extends BaseEntity {
 
     Integer allocatedQuantity;
-    Integer leftQuantity;
+    Integer actualQuantity;
     Double price;
     Long orderId;
     Boolean isValid;
@@ -18,9 +18,9 @@ public class ExecutedOrder extends BaseEntity {
     public ExecutedOrder() {
     }
 
-    public ExecutedOrder(Integer allocatedQuantity, Integer leftQuantity, Double price, Long orderId, Boolean isValid, Boolean isMarketOrder, Integer financeIntrumentId) {
+    public ExecutedOrder(Integer allocatedQuantity, Integer actualQuantity, Double price, Long orderId, Boolean isValid, Boolean isMarketOrder, Integer financeIntrumentId) {
         this.allocatedQuantity = allocatedQuantity;
-        this.leftQuantity = leftQuantity;
+        this.actualQuantity = actualQuantity;
         this.price = price;
         this.orderId = orderId;
         this.isValid = isValid;
@@ -48,7 +48,7 @@ public class ExecutedOrder extends BaseEntity {
     public String toString() {
         final StringBuilder sb = new StringBuilder("ExecutedOrder{");
         sb.append("allocatedQuantity=").append(allocatedQuantity);
-        sb.append(", leftQuantity=").append(leftQuantity);
+        sb.append(", actualQuantity=").append(actualQuantity);
         sb.append(", price=").append(price);
         sb.append(", orderId=").append(orderId);
         sb.append(", isValid=").append(isValid);
@@ -66,12 +66,12 @@ public class ExecutedOrder extends BaseEntity {
         this.allocatedQuantity = allocatedQuantity;
     }
 
-    public Integer getLeftQuantity() {
-        return leftQuantity;
+    public Integer getActualQuantity() {
+        return actualQuantity;
     }
 
-    public void setLeftQuantity(Integer leftQuantity) {
-        this.leftQuantity = leftQuantity;
+    public void setActualQuantity(Integer actualQuantity) {
+        this.actualQuantity = actualQuantity;
     }
 
     public Double getPrice() {

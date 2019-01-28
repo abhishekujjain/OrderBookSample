@@ -3,7 +3,7 @@ package com.ujjain.trade.api.Utils;
 import com.ujjain.trade.api.model.ExecuteOrderRequest;
 import com.ujjain.trade.api.service.OrderBookServices;
 import com.ujjain.trade.api.service.OrderService;
-import com.ujjain.trade.dependencies.db.model.OrderModel;
+import com.ujjain.trade.dependencies.db.model.Order;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,25 +28,16 @@ public class ExecuteLimitOrder implements Runnable {
     public void run() {
         synchronized (lock) {
 
-            List<OrderModel> orderModelList = orderService.getAll(false);
+            List<Order> orderModelList = orderService.getAllByInstrumentId(executeOrderRequest.getFinanceInstrumentId(), false);
 
 
-            for (OrderModel orderModel : orderModelList) {
-                synchronized (lock) {
+            for (Order orderModel : orderModelList) {
 
                     logger.info("Executing limit order");
                     if (orderModelList != null && orderModelList.size() > 0 && orderBookServices.getQty() > 0) {
                         orderBookServices.executeOrderUnitWise(executeOrderRequest, orderModel,false);
                     }
-                    try {
-                        lock.notifyAll();
-                        if (orderService.getAll(true) != null && orderService.getAll(true).size() > 0) {
-                            lock.wait();
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+
             }
 
 

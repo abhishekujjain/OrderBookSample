@@ -16,7 +16,7 @@ public class ExecutedOrdertable extends BaseEntity {
     public ExecutedOrdertable() {
     }
 
-    public ExecutedOrdertable(Double executionPrice, Integer allotedQuantity, Integer financeIntrumentId) {
+    public  ExecutedOrdertable(Double executionPrice, Integer allotedQuantity, Integer financeIntrumentId) {
         this.executionPrice = executionPrice;
         this.allotedQuantity = allotedQuantity;
         this.financeIntrumentId = financeIntrumentId;

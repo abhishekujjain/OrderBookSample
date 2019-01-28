@@ -1,5 +1,6 @@
 package com.ujjain.trade.api.model;
 
+
 public class OrderRequest {
 
     private int quantity;

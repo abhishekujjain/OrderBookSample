@@ -1,11 +1,10 @@
 package com.ujjain.trade.api.model;
 
 import com.ujjain.trade.dependencies.db.model.ExecutedOrder;
-import com.ujjain.trade.dependencies.db.model.OrderModel;
 
 import java.util.HashMap;
 
-public class OrderModelRespose {
+public class ExecutedOrderResponse {
 
     Integer numberofOrder;
     Integer quantityDemanded;
@@ -13,30 +12,11 @@ public class OrderModelRespose {
     Integer quantityDemandedInvalid;
     Integer biggestOrder;
     Integer smallestOrder;
-    OrderModel earlierOrderEntry;
-    OrderModel lastOrderEntry;
-    Integer marketOrderQuantity;
-    HashMap<Double, Integer> executionQuantityWithPrice;
-    HashMap<Double, Integer> requestedOrderPrice;
-    HashMap<Integer, Integer> OrderBookWiseWise;
+    HashMap<Double, Integer> requestedOrderPriceForLimitOrder;
+    HashMap<Integer, Integer> OrderBookWise;
     ExecutedOrder earlierOrderEntryExecuted;
     ExecutedOrder lastOrderEntryExecuted;
-
-    public Integer getMarketOrderQuantity() {
-        return marketOrderQuantity;
-    }
-
-    public void setMarketOrderQuantity(Integer marketOrderQuantity) {
-        this.marketOrderQuantity = marketOrderQuantity;
-    }
-
-    public HashMap<Integer, Integer> getOrderBookWiseWise() {
-        return OrderBookWiseWise;
-    }
-
-    public void setOrderBookWiseWise(HashMap<Integer, Integer> orderBookWiseWise) {
-        OrderBookWiseWise = orderBookWiseWise;
-    }
+    HashMap<Double, Integer> executionQuantityWithPrice;
 
     public HashMap<Double, Integer> getExecutionQuantityWithPrice() {
         return executionQuantityWithPrice;
@@ -46,21 +26,25 @@ public class OrderModelRespose {
         this.executionQuantityWithPrice = executionQuantityWithPrice;
     }
 
+    public HashMap<Integer, Integer> getOrderBookWiseWise() {
+        return OrderBookWise;
+    }
+
+    public void setOrderBookWiseWise(HashMap<Integer, Integer> orderBookWiseWise) {
+        OrderBookWise = orderBookWiseWise;
+    }
+
+
+
     public HashMap<Double, Integer> getRequestedOrderPrice() {
-        return requestedOrderPrice;
+        return requestedOrderPriceForLimitOrder;
     }
 
     public void setRequestedOrderPrice(HashMap<Double, Integer> requestedOrderPrice) {
-        this.requestedOrderPrice = requestedOrderPrice;
+        this.requestedOrderPriceForLimitOrder = requestedOrderPrice;
     }
 
-    public HashMap<Double, Integer> getExecutionQuntityWithPrice() {
-        return executionQuantityWithPrice;
-    }
 
-    public void setExecutionQuntityWithPrice(HashMap<Double, Integer> executionQuntityWithPrice) {
-        this.executionQuantityWithPrice = executionQuntityWithPrice;
-    }
 
     public ExecutedOrder getEarlierOrderEntryExecuted() {
         return earlierOrderEntryExecuted;
@@ -110,13 +94,6 @@ public class OrderModelRespose {
         this.smallestOrder = smallestOrder;
     }
 
-    public OrderModel getEarlierOrderEntry() {
-        return earlierOrderEntry;
-    }
-
-    public void setEarlierOrderEntry(OrderModel earlierOrderEntry) {
-        this.earlierOrderEntry = earlierOrderEntry;
-    }
 
     public Integer getQuantityDemandedValid() {
         return quantityDemandedValid;
@@ -134,11 +111,5 @@ public class OrderModelRespose {
         this.quantityDemandedInvalid = quantityDemandedInvalid;
     }
 
-    public OrderModel getLastOrderEntry() {
-        return lastOrderEntry;
-    }
 
-    public void setLastOrderEntry(OrderModel lastOrderEntry) {
-        this.lastOrderEntry = lastOrderEntry;
-    }
 }

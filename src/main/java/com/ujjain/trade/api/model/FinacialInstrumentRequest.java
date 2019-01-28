@@ -1,22 +1,14 @@
-package com.ujjain.trade.dependencies.db.model;
+package com.ujjain.trade.api.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+public class FinacialInstrumentRequest {
 
-@Entity
-@Table(name = "OrderBookTable")
-public class OrderBookTable extends BaseEntity {
-
-    @Column(unique = true)
     Integer instrumentId;
     Boolean status;
 
-
-    public OrderBookTable() {
+    public FinacialInstrumentRequest() {
     }
 
-    public OrderBookTable(int instrumentId, boolean status) {
+    public FinacialInstrumentRequest(Integer instrumentId, Boolean status) {
         this.instrumentId = instrumentId;
         this.status = status;
     }

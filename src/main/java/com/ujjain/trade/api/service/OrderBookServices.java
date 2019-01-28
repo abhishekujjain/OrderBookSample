@@ -5,11 +5,9 @@ import com.ujjain.trade.api.Utils.ExecuteMarketOrder;
 import com.ujjain.trade.api.model.ExecuteOrderRequest;
 import com.ujjain.trade.dependencies.db.dao.ExecutedOrderDao;
 import com.ujjain.trade.dependencies.db.dao.ExecutedStatsDao;
+import com.ujjain.trade.dependencies.db.dao.OrderBookDao;
 import com.ujjain.trade.dependencies.db.dao.OrderBookStatusDao;
-import com.ujjain.trade.dependencies.db.model.ExecutedOrder;
-import com.ujjain.trade.dependencies.db.model.ExecutedOrdertable;
-import com.ujjain.trade.dependencies.db.model.OrderBookTable;
-import com.ujjain.trade.dependencies.db.model.OrderModel;
+import com.ujjain.trade.dependencies.db.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,16 +23,23 @@ import java.util.concurrent.ScheduledExecutorService;
 public class OrderBookServices {
     private static final Logger logger = LoggerFactory.getLogger(OrderBookServices.class);
 
-    @Autowired
-    ExecutedOrderDao executedOrderDao;
-    @Autowired
-    OrderService orderService;
-    @Autowired
-    OrderBookStatusDao orderBookStatusDao;
-    @Autowired
-    ExecutedStatsDao executedStatsDao;
+    final ExecutedOrderDao executedOrderDao;
+    final OrderService orderService;
+    final OrderBookStatusDao orderBookStatusDao;
+    final ExecutedStatsDao executedStatsDao;
+    final OrderBookDao orderBookDao;
+
     private volatile int qty = 0;
     private Double allocationPerUnit = 0.0;
+
+    @Autowired
+    public OrderBookServices(ExecutedOrderDao executedOrderDao, OrderService orderService, OrderBookStatusDao orderBookStatusDao, ExecutedStatsDao executedStatsDao, OrderBookDao orderBookDao) {
+        this.executedOrderDao = executedOrderDao;
+        this.orderService = orderService;
+        this.orderBookStatusDao = orderBookStatusDao;
+        this.executedStatsDao = executedStatsDao;
+        this.orderBookDao = orderBookDao;
+    }
 
     public int getQty() {
         return qty;
@@ -46,98 +51,96 @@ public class OrderBookServices {
 
     @Transactional
     public String executeOrder(ExecuteOrderRequest executeOrderRequest) {
-        try {
-            logger.info("Order Execution started");
 
-            OrderBookTable orderBookTable = orderBookStatusDao.findByInstrumentId(executeOrderRequest.getFinanceInstrumentId());
-            if (orderBookTable != null && orderBookTable.getStatus() == false) {
+
+        FinancialInstrument financialInstrument = orderBookStatusDao.findByInstrumentId(executeOrderRequest.getFinanceInstrumentId());
+        if (financialInstrument != null && financialInstrument.getStatus() == false) {
                 callExecuteOrder(executeOrderRequest);
-            } else {
-                return "Close finance Instrument";
-            }
-        } catch (Exception e) {
-            logger.info("Exeception while executing order " + e.getMessage());
-            e.printStackTrace();
+            orderBookDao.save(new OrderBook(executeOrderRequest.getQuantity(), executeOrderRequest.getPrice(), executeOrderRequest.getQuantity(), true));
+        } else if (financialInstrument == null) {
+            return "finance Instrument not present";
+        } else {
+            return "finance Instrument still open ! Can't execute open orderbook";
+
         }
-        return "Success";
+
+        return "Order Executed";
     }
 
     public void callExecuteOrder(ExecuteOrderRequest executeOrderRequest) {
-        List<OrderModel> orderModelList = orderService.getAllByInstrumentId(executeOrderRequest.getFinanceInstrumentId(), false);
+        List<Order> orderList = orderService.getAllByInstrumentId(executeOrderRequest.getFinanceInstrumentId(), false);
 
         ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
         Object lock = new Object();
         qty = executeOrderRequest.getQuantity();
         logger.info("Total quantity recieved for execution :" + qty);
         allocationPerUnit = getAllocationPerUnitQuantity(executeOrderRequest);
-        scheduledExecutorService.execute(new ExecuteMarketOrder(lock, orderService, this, executeOrderRequest));
-        scheduledExecutorService.execute(new ExecuteLimitOrder(lock, orderService, this, executeOrderRequest));
+        scheduledExecutorService.execute(new ExecuteMarketOrder(lock,orderService, this, executeOrderRequest));
+        scheduledExecutorService.execute(new ExecuteLimitOrder(lock,orderService, this, executeOrderRequest));
         scheduledExecutorService.shutdown();
         logger.info("Order Execution Processed");
 
 
     }
 
-    private Integer getCount(List<OrderModel> orderModelList) {
+    private Integer getCount(List<Order> orderList) {
         int count = 0;
-        for (OrderModel orderModel : orderModelList) {
-            count += orderModel.getOrderedQuantity();
+        for (Order order : orderList) {
+            count += order.getOrderedQuantity();
         }
         return count;
     }
 
 
-    public void executeOrderUnitWise(ExecuteOrderRequest executedOrder, OrderModel orderModel, boolean isMarket) {
-        logger.info("Execution for order started for  :" + orderModel.toString());
+    @Transactional
+    public void executeOrderUnitWise(ExecuteOrderRequest executedOrder, Order order, boolean isMarket) {
+        logger.info("Execution for order started for  :" + order.toString());
 
         Boolean status = true;
-        if (orderModel.getPrice() < executedOrder.getPrice() && isMarket == false) {
+        if (order.getPrice() < executedOrder.getPrice() && isMarket == false) {
             status = false;
         }
-        int alloted = getExecutedQuantity(orderModel, allocationPerUnit);
+        int alloted = getExecutedQuantity(order, allocationPerUnit);
 
         if (qty - alloted >= 0) {
             if (status) {
                 qty = qty - alloted;
             }
-            Double executedPrice = orderModel.getPrice();
+            Double executedPrice = order.getPrice();
             if (isMarket) {
                 executedPrice = executedOrder.getPrice();
             }
-            int leftQuantity = orderModel.getOrderedQuantity() - alloted;
-            ExecutedOrder executedOrdr = new ExecutedOrder(alloted, leftQuantity, executedPrice, orderModel.getId(), status, orderModel.getMarketOrder(), orderModel.getFinanceIntrumentId());
+            int leftQuantity = order.getOrderedQuantity() - alloted;
+            ExecutedOrder executedOrdr = new ExecutedOrder(alloted, order.getOrderedQuantity(), executedPrice, order.getId(), status, order.getMarketOrder(), order.getFinanceIntrumentId());
             executedOrderDao.save(executedOrdr);
-            orderService.deleteOrder(orderModel);
+            orderService.deleteOrder(order);
             updateExecutedTable(executedOrder);
-            logger.info("Execution for order completed for  :" + orderModel.toString());
+            logger.info("Execution for order completed for  :" + order.toString());
 
-//
         }
+//
+
     }
 
-    private int getExecutedQuantity(OrderModel orderModel, Double allocationPerUnitQuantity) {
+    private int getExecutedQuantity(Order order, Double allocationPerUnitQuantity) {
         int allotedQuantity = 0;
-        allotedQuantity = (int) (orderModel.getOrderedQuantity() * allocationPerUnitQuantity);
+        allotedQuantity = (int) (order.getOrderedQuantity() * allocationPerUnitQuantity);
         logger.info("allocated qty : " + allotedQuantity);
         return allotedQuantity;
     }
 
-    private void updateExecutedTable(ExecuteOrderRequest request) {
+     void updateExecutedTable(ExecuteOrderRequest request) {
 
-        int val = 0;
         ExecutedOrdertable executedOrdertable = null;
-        try {
-            executedOrdertable = executedStatsDao.findByExecutionPrice(request.getPrice());
+        executedOrdertable = executedStatsDao.findByExecutionPrice(request.getPrice());
             if (executedOrdertable != null) {
                 logger.info("Table updated for executed order");
-                val = executedStatsDao.updateExecutedOrder(request.getQuantity(), request.getPrice());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+                executedStatsDao.updateExecutedOrder(executedOrdertable.getAllotedQuantity() + request.getQuantity(), request.getPrice());
+            }else if (executedOrdertable == null) {
+                logger.info("Table added for executed order");
+                executedStatsDao.save(new ExecutedOrdertable(request.getPrice(), request.getQuantity(), request.getFinanceInstrumentId()));
         }
-        if (val <= 0 && executedOrdertable == null) {
-            executedStatsDao.save(new ExecutedOrdertable(request.getPrice(), request.getQuantity(), request.getFinanceInstrumentId()));
-        }
+
 
     }
 
@@ -148,8 +151,8 @@ public class OrderBookServices {
 
     public Double getAllocationPerUnitQuantity(ExecuteOrderRequest orderRequest) {
 
-        List<OrderModel> marketOrder = orderService.getAllMarketOrder(orderRequest.getFinanceInstrumentId());
-        List<OrderModel> limitOrder = orderService.getAllLimitOrder(orderRequest.getFinanceInstrumentId(), orderRequest.getPrice());
+        List<Order> marketOrder = orderService.getAllMarketOrder(orderRequest.getFinanceInstrumentId());
+        List<Order> limitOrder = orderService.getAllLimitOrder(orderRequest.getFinanceInstrumentId(), orderRequest.getPrice());
         int marktQty = getCount(marketOrder);
         int limittQty = getCount(limitOrder);
         Double availableQty = Double.valueOf(limittQty + marktQty);

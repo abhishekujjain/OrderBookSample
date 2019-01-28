@@ -3,7 +3,7 @@ package com.ujjain.trade.dependencies.db.model;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @MappedSuperclass
 public class BaseEntity {
@@ -17,7 +17,7 @@ public class BaseEntity {
 
     @Column(name = "createdOn")
     @CreationTimestamp
-    Date createdOn;
+    LocalDate createdOn;
 
     public Long getId() {
         return id;
@@ -27,11 +27,11 @@ public class BaseEntity {
         this.id = id;
     }
 
-    public Date getCreatedOn() {
+    public LocalDate getCreatedOn() {
         return createdOn;
     }
 
-    public void setCreatedOn(Date createdOn) {
+    public void setCreatedOn(LocalDate createdOn) {
         this.createdOn = createdOn;
     }
 

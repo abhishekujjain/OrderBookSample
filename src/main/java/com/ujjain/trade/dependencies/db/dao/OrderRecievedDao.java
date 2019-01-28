@@ -5,8 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import javax.transaction.Transactional;
+
 public interface OrderRecievedDao extends JpaRepository<OrderRecieved, Long> {
 
+    @Transactional
     @Modifying
     @Query("update OrderRecieved limitOrder set limitOrder.quantity = ?1  where limitOrder.price = ?2 and limitOrder.financialId = ?3")
     int updateLimitOrder(int qty, double price, int financeIntrumentId);
